@@ -3,10 +3,9 @@ import os
 import gudhi as gd
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import SimpleITK as sitk
 from PIL import Image
-
-import pandas as pd
 
 # Turn off usetex mode to avoid requiring TeX
 plt.rcParams["text.usetex"] = False
@@ -19,8 +18,6 @@ def plot_image_array(image_array, output_file_name="output"):
     plt.axis("off")
     plt.savefig(
         "result/" + output_file_name + ".png",
-        dpi=300,
-        bbox_inches="tight",
     )
 
 
@@ -52,7 +49,7 @@ def persistent_homology(image_data, output_file_name="output"):
             persistence[idx] = (birth, (death[0], image_array.max()))
 
     # Visualization
-    # plot_image_array(image_data, output_file_name)
+    plot_image_array(image_data, output_file_name)
     plot_persistence_diagram(persistence, output_file_name)
     plot_persistence_barcode(persistence, output_file_name)
 

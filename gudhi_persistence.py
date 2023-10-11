@@ -60,7 +60,6 @@ def compute_persistence_features(image_data, name):
     plt.title("Persistence Barcode")
     plt.gca().invert_yaxis()  # Inverting the y-axis for barcode
     plt.savefig("test_result/barcode" + name + ".png")
-    # plt.show()
 
     # Plot persistence diagram with colors based on given result
     plt.figure()
@@ -82,7 +81,6 @@ def compute_persistence_features(image_data, name):
     plt.ylabel("Death")
     plt.title("Persistence Diagram")
     plt.savefig("test_result/diagram" + name + ".png")
-    # plt.show()
 
 
 # Execute the function

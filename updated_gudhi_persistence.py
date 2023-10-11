@@ -3,17 +3,52 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+from gudhi.wasserstein import wasserstein_distance
+
 # Turn off usetex mode to avoid requiring TeX
 plt.rcParams["text.usetex"] = False
 
 # Given image array
+# image_array = np.array(
+#     [
+#         [1, 1, 1, 1, 1, 1],
+#         [1, 1, 1, 1, 1, 1],
+#         [1, 0.4, 0, 0.2, 1, 1],
+#         [1, 1, 0, 1, 1, 1],
+#         [1, 1, 1, 1, 1, 1],
+#         [1, 1, 1, 1, 1, 1],
+#     ]
+# )
+
 image_array = np.array(
     [
         [0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0],
-        [0, 0.4, 0, 0.2, 0, 0],
-        [0, 1, 0, 1, 0, 0],
-        [0, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 0],
+        [0, 0.4, 0, 0, 0.2, 0],
+        [0, 1, 0, 0, 1, 0],
+        [0, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0],
+    ]
+)
+
+# image_array_2 = np.array(
+#     [
+#         [1, 1, 1, 1, 1, 1],
+#         [1, 0, 0, 0, 0, 1],
+#         [1, 0.6, 1, 1, 0.8, 1],
+#         [1, 0, 1, 1, 0, 1],
+#         [1, 0, 0, 0, 0, 1],
+#         [1, 1, 1, 1, 1, 1],
+#     ]
+# )
+
+image_array_2 = np.array(
+    [
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 0],
+        [0, 0.8, 0, 0, 0.3, 0],
+        [0, 1, 0, 0, 1, 0],
+        [0, 1, 1, 1, 1, 0],
         [0, 0, 0, 0, 0, 0],
     ]
 )
@@ -58,7 +93,6 @@ def persistent_homology(image_data, output_file_name="output"):
     persistence = cc.persistence()
 
     for idx, (birth, death) in enumerate(persistence):
-        print(f"{idx}: {birth}, {death}")
         if death[1] == float("inf"):
             persistence[idx] = (birth, (death[0], image_array.max()))
 
@@ -74,16 +108,23 @@ def convert_to_numpy_array(diagram):
     """Converts the persistence diagram to the expected numpy.ndarray format."""
     diag_array = []
     for point in diagram:
-        if point[1][1] == float(
-            "inf"
-        ):  # Replace inf with a large value for visualization
-            diag_array.append([point[1][0], point[1][0] + 10])
-        else:
-            diag_array.append(list(point[1]))
+        diag_array.append(list(point[1]))
     return np.array(diag_array)
 
 
+def create_simplicial_complex(image_array):
+    sc = gd.SimplexTree()
+    for i in range(len(image_array)):
+        for j in range(len(image_array[i])):
+            if image_array[i][j] > 0:
+                sc.insert([i, j])  # 単体の頂点を挿入
+    return sc
+
+
 # Calling the function with the image_array to visualize the results
+# print("Image Array:")
+# print(image_array)
+
 image_persistent = persistent_homology(image_array)
 convert_image_array = 1 - image_array
 conv_persistent = persistent_homology(convert_image_array, "convert")
@@ -91,7 +132,7 @@ conv_persistent = persistent_homology(convert_image_array, "convert")
 # Compute the bottleneck distance between the two diagrams
 image_persistent_array = convert_to_numpy_array(image_persistent)
 conv_persistent_array = convert_to_numpy_array(conv_persistent)
-bottleneck_distance = gd.bottleneck_distance(
-    image_persistent_array, conv_persistent_array
-)
-print("Bottleneck Distance:", bottleneck_distance)
+b_distance = gd.bottleneck_distance(image_persistent_array, conv_persistent_array)
+w_distance = wasserstein_distance(image_persistent_array, conv_persistent_array)
+# print("Bottleneck Distance:%.2f " % b_distance)
+# print("Wasserstein Distance:%.2f " % w_distance)

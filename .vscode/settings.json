@@ -8,7 +8,6 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "python.analysis.autoFormatStrings": true,
     "editor.formatOnSave": true,
-    "flake8.importStrategy": "fromEnvironment",
     "flake8.severity": {
         "E": "Warning",
         "F": "Warning"
