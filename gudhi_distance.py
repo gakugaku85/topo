@@ -8,8 +8,8 @@ from gudhi.wasserstein import wasserstein_distance
 # a = np.array([[10.0, 18.0], [5.0, 17.0], [1.0, 15.0], [2.0, 14.0]])
 # b = np.array([[10.0, 20.0], [5.0, 14.0], [3.0, 13.0]])
 
-b = np.array([[10.0, 18.0], [5.0, 17.0], [1.0, 15.0], [2.0, 13.0]])
-a = np.array([[10.0, 14.0], [1.0, 13.0], [3.0, 13.0], [5.0, 14.0], [10.0, 20.0]])
+a = np.array([[10.0, 18.0], [5.0, 17.0]])
+b = np.array([[10.0, 14.0], [1.0, 11.0], [3.0, 12.0]])
 
 
 # plot_diagram(a,b)
@@ -30,6 +30,23 @@ plt.text(15, 5, message, ha="center", fontsize=10, color="black")
 message = "Wasserstein distance = " + "%.3f" % cost
 plt.text(15, 4, message, ha="center", fontsize=10, color="black")
 
+for i in range(len(a)):
+    plt.text(
+        a[i, 0] + 0.2,
+        a[i, 1],
+        f"({a[i, 0]:.1f}, {a[i, 1]:.1f})",
+        fontsize=8,
+        color="black",
+    )
+for i in range(len(b)):
+    plt.text(
+        b[i, 0] + 0.2,
+        b[i, 1],
+        f"({b[i, 0]:.1f}, {b[i, 1]:.1f})",
+        fontsize=8,
+        color="black",
+    )
+
 for match in matchings:
     if match[0] != -1 and match[1] != -1:
         plt.plot(
@@ -39,27 +56,43 @@ for match in matchings:
             c="gray",
         )
     else:
-        print("innlo")
         if match[0] == -1:
+            x = (b[match[1], 0] + b[match[1], 1]) / 2
+            y = -x + b[match[1], 0] + b[match[1], 1]
             plt.plot(
-                [b[match[1], 0], b[match[1], 0]],
-                [b[match[1], 1], b[match[1], 0]],
+                [(b[match[1], 0]), x],
+                [b[match[1], 1], y],
                 linestyle="--",
                 c="gray",
             )
+            plt.text(
+                x + 0.2,
+                y,
+                f"({x:.1f}, {y:.1f})",
+                fontsize=8,
+                color="black",
+            )
         else:
+            x = (a[match[0], 0] + a[match[0], 1]) / 2
+            y = -x + a[match[0], 0] + a[match[0], 1]
             plt.plot(
-                [a[match[0], 0], a[match[0], 0]],
-                [a[match[0], 1], a[match[0], 0]],
+                [a[match[0], 0], x],
+                [a[match[0], 1], y],
                 linestyle="--",
                 c="gray",
+            )
+            plt.text(
+                x + 0.2,
+                y,
+                f"({x:.1f}, {y:.1f})",
+                fontsize=8,
+                color="black",
             )
 
 plt.savefig("test_result/" + "ab" + "_diagram.png")
 plt.clf()
 
 print(f"Wasserstein distance value = {cost:.2f}")
-print(f"matchings = {matchings}")
 dgm1_to_diagonal = matchings[matchings[:, 1] == -1, 0]
 dgm2_to_diagonal = matchings[matchings[:, 0] == -1, 1]
 off_diagonal_match = np.delete(matchings, np.where(matchings == -1)[0], axis=0)
