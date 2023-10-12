@@ -3,7 +3,7 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "black-formatter.args": [
-        "--line-length=85"
+        "--line-length=89"
     ],
     "editor.defaultFormatter": "ms-python.black-formatter",
     "python.analysis.autoFormatStrings": true,
