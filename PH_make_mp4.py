@@ -10,7 +10,8 @@ import os
 
 def make_mp4(mhd_file_path, output_folder):
     image = sitk.ReadImage(mhd_file_path)
-    image_array = sitk.GetArrayFromImage(image)
+    image_array = sitk.GetArrayFromImage(image)[:, 64:128]
+    print(image_array.shape)
 
     frames = []
 
@@ -25,7 +26,7 @@ def make_mp4(mhd_file_path, output_folder):
         img_copy = frame.copy()
         draw = ImageDraw.Draw(img_copy)
         text = f"{i}"
-        draw.text((3, 3), text, fill=255)  # 位置(10,10)にテキストを描画
+        draw.text((3, 3), text, fill=255)
         frames_with_text.append(img_copy)
 
     # 画像リストをMP4に変換
